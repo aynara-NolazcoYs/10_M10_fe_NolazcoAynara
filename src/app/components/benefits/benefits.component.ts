@@ -1,0 +1,17 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-benefits',
+  standalone: false,
+  templateUrl: './benefits.component.html',
+  styleUrl: './benefits.component.css'
+})
+export class BenefitsComponent {
+nombre = '';
+correo = '';
+
+enviar(e: Event) {
+  e.preventDefault();
+  alert("Gracias por contactarnos");
+}
+}

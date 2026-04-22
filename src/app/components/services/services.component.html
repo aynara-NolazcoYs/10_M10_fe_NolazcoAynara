@@ -1,0 +1,21 @@
+<section class="services">
+  <h2>Nuestros servicios</h2>
+
+  <p class="subtitle">
+    Ofrecemos atención completa para el bienestar y salud de tu mascota.
+  </p>
+
+  <div class="cards">
+
+    <div *ngFor="let service of services" class="card">
+      <img [src]="service.image" />
+
+      <div class="card-content">
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>

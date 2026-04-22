@@ -1,0 +1,15 @@
+.contact-wrapper {
+  display: flex;
+  justify-content: center;   /* 👈 centra todo el grupo */
+  align-items: flex-start;
+  gap: 60px;
+
+  max-width: 900px;          /* 👈 CLAVE */
+  margin: 0 auto;            /* 👈 centra el bloque completo */
+}
+
+.contact-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}

@@ -1,0 +1,21 @@
+<div class="form-box">
+  <h3>Contáctanos</h3>
+
+  <form (submit)="enviar($event)">
+    <input 
+      type="text" 
+      placeholder="Nombre" 
+      [(ngModel)]="nombre" 
+      name="nombre"
+    >
+
+    <input 
+      type="email" 
+      placeholder="Correo" 
+      [(ngModel)]="correo" 
+      name="correo"
+    >
+
+    <button type="submit">Enviar</button>
+  </form>
+</div>
