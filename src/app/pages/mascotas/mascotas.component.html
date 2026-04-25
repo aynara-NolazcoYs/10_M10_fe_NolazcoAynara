@@ -1,0 +1,82 @@
+<h2 class="title">Gestión de Mascotas</h2>
+
+<div class="container">
+
+  <!-- FORMULARIO -->
+  <div class="form-box">
+    <h3>{{ editando ? 'Editar Mascota' : 'Nueva Mascota' }}</h3>
+
+    <form (submit)="guardar(); $event.preventDefault()">
+
+      <input 
+        type="text" 
+        placeholder="Nombre"
+        [(ngModel)]="form.nombre"
+        name="nombre"
+        required
+      >
+
+      <input 
+        type="text" 
+        placeholder="Tipo (Perro/Gato)"
+        [(ngModel)]="form.tipo"
+        name="tipo"
+        required
+      >
+
+      <input 
+        type="number" 
+        placeholder="Edad"
+        [(ngModel)]="form.edad"
+        name="edad"
+        required
+      >
+
+      <input 
+        type="text" 
+        placeholder="Descripción"
+        [(ngModel)]="form.descripcion"
+        name="descripcion"
+      >
+
+      <button type="submit">
+        {{ editando ? 'Actualizar' : 'Guardar' }}
+      </button>
+
+      <button type="button" (click)="reset()">
+        Limpiar
+      </button>
+
+    </form>
+  </div>
+
+  <!-- LISTA -->
+  <div class="list-box">
+    <h3>Listado de Mascotas</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Edad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let m of mascotas">
+          <td>{{ m.nombre }}</td>
+          <td>{{ m.tipo }}</td>
+          <td>{{ m.edad }}</td>
+          <td>
+            <button class="edit" (click)="editar(m)">Editar</button>
+            <button class="delete" (click)="eliminar(m.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

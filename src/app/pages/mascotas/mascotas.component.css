@@ -1,0 +1,82 @@
+.title {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* CONTENEDOR */
+.container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+/* FORMULARIO */
+.form-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background: #ff914d;
+  color: white;
+}
+
+button[type="button"] {
+  background: #ccc;
+}
+
+/* LISTA */
+.list-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 400px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+/* BOTONES */
+.edit {
+  background: #4caf50;
+  color: white;
+  margin-right: 5px;
+}
+
+.delete {
+  background: #f44336;
+  color: white;
+}
