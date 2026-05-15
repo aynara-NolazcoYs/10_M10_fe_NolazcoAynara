@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MascotasService } from './services/mascotas.service';
+
 @Component({
   selector: 'app-mascotas',
   standalone: false,
@@ -7,7 +9,9 @@ import { MascotasService } from './services/mascotas.service';
   styleUrl: './mascotas.component.css'
 })
 export class MascotasComponent {
-mascotas: any[] = [];
+  mascotas: any[] = [];
+  
+  @ViewChild('formulario') formulario!: NgForm;
 
   form: any = {
     id: null,
@@ -18,6 +22,8 @@ mascotas: any[] = [];
   };
 
   editando = false;
+  mensajeError = '';
+  mensajeExito = '';
 
   constructor(private service: MascotasService) {}
 
@@ -26,35 +32,61 @@ mascotas: any[] = [];
   }
 
   cargar() {
-  this.service.getAll().subscribe((data: any) => {
-    this.mascotas = [...data]; // 🔥 aquí va
-  });
-}
+    this.service.getAll().subscribe((data: any) => {
+      this.mascotas = [...data];
+    });
+  }
 
   guardar() {
+    // Validar que el formulario sea válido
+    if (!this.formulario.valid) {
+      this.mostrarError('Por favor completa todos los campos requeridos correctamente');
+      return;
+    }
+
     if (this.editando) {
-      this.service.update(this.form.id, this.form).subscribe(() => {
-        this.reset();
-        this.cargar();
-      });
+      this.service.update(this.form.id, this.form).subscribe(
+        () => {
+          this.mostrarExito('Mascota actualizada exitosamente');
+          this.reset();
+          this.cargar();
+        },
+        (error) => {
+          this.mostrarError('Error al actualizar la mascota');
+        }
+      );
     } else {
-      this.service.create(this.form).subscribe(() => {
-        this.reset();
-        this.cargar();
-      });
+      this.service.create(this.form).subscribe(
+        () => {
+          this.mostrarExito('Mascota registrada exitosamente');
+          this.reset();
+          this.cargar();
+        },
+        (error) => {
+          this.mostrarError('Error al registrar la mascota');
+        }
+      );
     }
   }
 
   editar(m: any) {
     this.form = { ...m };
     this.editando = true;
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   eliminar(id: number) {
-    if (confirm('¿Eliminar mascota?')) {
-      this.service.delete(id).subscribe(() => {
-        this.cargar();
-      });
+    if (confirm('¿Eliminar esta mascota?')) {
+      this.service.delete(id).subscribe(
+        () => {
+          this.mostrarExito('Mascota eliminada exitosamente');
+          this.cargar();
+        },
+        (error) => {
+          this.mostrarError('Error al eliminar la mascota');
+        }
+      );
     }
   }
 
@@ -67,5 +99,39 @@ mascotas: any[] = [];
       descripcion: ''
     };
     this.editando = false;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+    
+    // Resetear el formulario también
+    if (this.formulario) {
+      this.formulario.resetForm();
+    }
+  }
+
+  private mostrarError(mensaje: string) {
+    this.mensajeError = mensaje;
+    setTimeout(() => {
+      this.mensajeError = '';
+    }, 5000);
+  }
+
+  private mostrarExito(mensaje: string) {
+    this.mensajeExito = mensaje;
+    setTimeout(() => {
+      this.mensajeExito = '';
+    }, 5000);
+  }
+
+  // Métodos para validación en template
+  isFieldInvalid(fieldName: string): boolean {
+    if (!this.formulario) return false;
+    const field = this.formulario.controls[fieldName];
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+
+  isFieldValid(fieldName: string): boolean {
+    if (!this.formulario) return false;
+    const field = this.formulario.controls[fieldName];
+    return field ? field.valid && (field.dirty || field.touched) : false;
   }
 }

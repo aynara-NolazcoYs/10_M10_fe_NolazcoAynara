@@ -6,46 +6,131 @@
   <div class="form-box">
     <h3>{{ editando ? 'Editar Mascota' : 'Nueva Mascota' }}</h3>
 
-    <form (submit)="guardar(); $event.preventDefault()">
+    <!-- Mensajes de error y éxito -->
+    <div *ngIf="mensajeError" class="alert alert-error">
+      {{ mensajeError }}
+    </div>
 
-      <input 
-        type="text" 
-        placeholder="Nombre"
-        [(ngModel)]="form.nombre"
-        name="nombre"
-        required
-      >
+    <div *ngIf="mensajeExito" class="alert alert-success">
+      {{ mensajeExito }}
+    </div>
 
-      <input 
-        type="text" 
-        placeholder="Tipo (Perro/Gato)"
-        [(ngModel)]="form.tipo"
-        name="tipo"
-        required
-      >
+    <!-- Formulario Template Driven -->
+    <form #formulario="ngForm" (ngSubmit)="guardar()">
 
-      <input 
-        type="number" 
-        placeholder="Edad"
-        [(ngModel)]="form.edad"
-        name="edad"
-        required
-      >
+      <!-- Campo Nombre -->
+      <div class="form-group">
+        <label for="nombre">Nombre *</label>
+        <input 
+          id="nombre"
+          type="text" 
+          placeholder="Ej: Firulais"
+          [(ngModel)]="form.nombre"
+          name="nombre"
+          required
+          minlength="2"
+          [class.input-valid]="isFieldValid('nombre')"
+          [class.input-invalid]="isFieldInvalid('nombre')"
+        >
+        <!-- Mensajes de error específicos -->
+        <div *ngIf="isFieldInvalid('nombre')" class="error-message">
+          <span *ngIf="formulario.controls['nombre']?.hasError('required')">
+            El nombre es requerido
+          </span>
+          <span *ngIf="formulario.controls['nombre']?.hasError('minlength')">
+            El nombre debe tener al menos 2 caracteres
+          </span>
+        </div>
+        <span *ngIf="isFieldValid('nombre')" class="valid-message">✓</span>
+      </div>
 
-      <input 
-        type="text" 
-        placeholder="Descripción"
-        [(ngModel)]="form.descripcion"
-        name="descripcion"
-      >
+      <!-- Campo Tipo -->
+      <div class="form-group">
+        <label for="tipo">Tipo (Perro/Gato) *</label>
+        <select 
+          id="tipo"
+          [(ngModel)]="form.tipo"
+          name="tipo"
+          required
+          [class.input-valid]="isFieldValid('tipo')"
+          [class.input-invalid]="isFieldInvalid('tipo')"
+        >
+          <option value="">Selecciona un tipo</option>
+          <option value="Perro">Perro</option>
+          <option value="Gato">Gato</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <div *ngIf="isFieldInvalid('tipo')" class="error-message">
+          Debes seleccionar un tipo de mascota
+        </div>
+        <span *ngIf="isFieldValid('tipo')" class="valid-message">✓</span>
+      </div>
 
-      <button type="submit">
-        {{ editando ? 'Actualizar' : 'Guardar' }}
-      </button>
+      <!-- Campo Edad -->
+      <div class="form-group">
+        <label for="edad">Edad (años) *</label>
+        <input 
+          id="edad"
+          type="number" 
+          placeholder="Ej: 3"
+          [(ngModel)]="form.edad"
+          name="edad"
+          required
+          min="0"
+          max="50"
+          [class.input-valid]="isFieldValid('edad')"
+          [class.input-invalid]="isFieldInvalid('edad')"
+        >
+        <div *ngIf="isFieldInvalid('edad')" class="error-message">
+          <span *ngIf="formulario.controls['edad']?.hasError('required')">
+            La edad es requerida
+          </span>
+          <span *ngIf="formulario.controls['edad']?.hasError('min')">
+            La edad debe ser mayor a 0
+          </span>
+          <span *ngIf="formulario.controls['edad']?.hasError('max')">
+            La edad debe ser menor a 50 años
+          </span>
+        </div>
+        <span *ngIf="isFieldValid('edad')" class="valid-message">✓</span>
+      </div>
 
-      <button type="button" (click)="reset()">
-        Limpiar
-      </button>
+      <!-- Campo Descripción -->
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea 
+          id="descripcion"
+          placeholder="Información adicional sobre la mascota (opcional)"
+          [(ngModel)]="form.descripcion"
+          name="descripcion"
+          rows="3"
+          minlength="5"
+          [class.input-valid]="isFieldValid('descripcion') && form.descripcion"
+          [class.input-invalid]="isFieldInvalid('descripcion')"
+        ></textarea>
+        <div *ngIf="isFieldInvalid('descripcion')" class="error-message">
+          La descripción debe tener al menos 5 caracteres
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="button-group">
+        <button 
+          type="submit"
+          class="btn-submit"
+          [disabled]="!formulario.valid"
+        >
+          {{ editando ? 'Actualizar' : 'Guardar' }}
+        </button>
+
+        <button 
+          type="button" 
+          class="btn-reset"
+          (click)="reset()"
+        >
+          Limpiar
+        </button>
+      </div>
 
     </form>
   </div>
@@ -54,12 +139,13 @@
   <div class="list-box">
     <h3>Listado de Mascotas</h3>
 
-    <table>
+    <table *ngIf="mascotas.length > 0">
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Tipo</th>
           <th>Edad</th>
+          <th>Descripción</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -68,7 +154,8 @@
         <tr *ngFor="let m of mascotas">
           <td>{{ m.nombre }}</td>
           <td>{{ m.tipo }}</td>
-          <td>{{ m.edad }}</td>
+          <td>{{ m.edad }} años</td>
+          <td>{{ m.descripcion || 'N/A' }}</td>
           <td>
             <button class="edit" (click)="editar(m)">Editar</button>
             <button class="delete" (click)="eliminar(m.id)">Eliminar</button>
@@ -76,6 +163,10 @@
         </tr>
       </tbody>
     </table>
+
+    <div *ngIf="mascotas.length === 0" class="empty-message">
+      No hay mascotas registradas aún.
+    </div>
 
   </div>
 
