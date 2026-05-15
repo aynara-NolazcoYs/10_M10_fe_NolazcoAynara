@@ -15,8 +15,8 @@
       {{ mensajeExito }}
     </div>
 
-    <!-- Formulario Template Driven -->
-    <form #formulario="ngForm" (ngSubmit)="guardar()">
+    <!-- Formulario Reactivo -->
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
 
       <!-- Campo Nombre -->
       <div class="form-group">
@@ -25,21 +25,13 @@
           id="nombre"
           type="text" 
           placeholder="Ej: Firulais"
-          [(ngModel)]="form.nombre"
-          name="nombre"
-          required
-          minlength="2"
+          formControlName="nombre"
           [class.input-valid]="isFieldValid('nombre')"
           [class.input-invalid]="isFieldInvalid('nombre')"
         >
         <!-- Mensajes de error específicos -->
         <div *ngIf="isFieldInvalid('nombre')" class="error-message">
-          <span *ngIf="formulario.controls['nombre']?.hasError('required')">
-            El nombre es requerido
-          </span>
-          <span *ngIf="formulario.controls['nombre']?.hasError('minlength')">
-            El nombre debe tener al menos 2 caracteres
-          </span>
+          {{ getFieldError('nombre') }}
         </div>
         <span *ngIf="isFieldValid('nombre')" class="valid-message">✓</span>
       </div>
@@ -49,9 +41,7 @@
         <label for="tipo">Tipo (Perro/Gato) *</label>
         <select 
           id="tipo"
-          [(ngModel)]="form.tipo"
-          name="tipo"
-          required
+          formControlName="tipo"
           [class.input-valid]="isFieldValid('tipo')"
           [class.input-invalid]="isFieldInvalid('tipo')"
         >
@@ -73,24 +63,12 @@
           id="edad"
           type="number" 
           placeholder="Ej: 3"
-          [(ngModel)]="form.edad"
-          name="edad"
-          required
-          min="0"
-          max="50"
+          formControlName="edad"
           [class.input-valid]="isFieldValid('edad')"
           [class.input-invalid]="isFieldInvalid('edad')"
         >
         <div *ngIf="isFieldInvalid('edad')" class="error-message">
-          <span *ngIf="formulario.controls['edad']?.hasError('required')">
-            La edad es requerida
-          </span>
-          <span *ngIf="formulario.controls['edad']?.hasError('min')">
-            La edad debe ser mayor a 0
-          </span>
-          <span *ngIf="formulario.controls['edad']?.hasError('max')">
-            La edad debe ser menor a 50 años
-          </span>
+          {{ getFieldError('edad') }}
         </div>
         <span *ngIf="isFieldValid('edad')" class="valid-message">✓</span>
       </div>
@@ -101,15 +79,13 @@
         <textarea 
           id="descripcion"
           placeholder="Información adicional sobre la mascota (opcional)"
-          [(ngModel)]="form.descripcion"
-          name="descripcion"
+          formControlName="descripcion"
           rows="3"
-          minlength="5"
-          [class.input-valid]="isFieldValid('descripcion') && form.descripcion"
+          [class.input-valid]="isFieldValid('descripcion') && formulario.get('descripcion')?.value"
           [class.input-invalid]="isFieldInvalid('descripcion')"
         ></textarea>
         <div *ngIf="isFieldInvalid('descripcion')" class="error-message">
-          La descripción debe tener al menos 5 caracteres
+          {{ getFieldError('descripcion') }}
         </div>
       </div>
 

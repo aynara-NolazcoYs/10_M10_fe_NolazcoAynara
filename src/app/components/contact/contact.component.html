@@ -1,21 +1,79 @@
 <div class="form-box">
   <h3>Contáctanos</h3>
 
-  <form (submit)="enviar($event)">
-    <input 
-      type="text" 
-      placeholder="Nombre" 
-      [(ngModel)]="nombre" 
-      name="nombre"
-    >
+  <!-- Mensajes de error y éxito -->
+  <div *ngIf="mensajeError" class="alert alert-error">
+    {{ mensajeError }}
+  </div>
 
-    <input 
-      type="email" 
-      placeholder="Correo" 
-      [(ngModel)]="correo" 
-      name="correo"
-    >
+  <div *ngIf="mensajeExito" class="alert alert-success">
+    {{ mensajeExito }}
+  </div>
 
-    <button type="submit">Enviar</button>
+  <!-- Formulario Reactivo -->
+  <form [formGroup]="formulario" (ngSubmit)="enviar()">
+    
+    <!-- Campo Nombre -->
+    <div class="form-group">
+      <label for="nombre">Nombre *</label>
+      <input 
+        id="nombre"
+        type="text" 
+        placeholder="Tu nombre completo"
+        formControlName="nombre"
+        [class.input-valid]="isFieldValid('nombre')"
+        [class.input-invalid]="isFieldInvalid('nombre')"
+      >
+      <div *ngIf="isFieldInvalid('nombre')" class="error-message">
+        {{ getFieldError('nombre') }}
+      </div>
+      <span *ngIf="isFieldValid('nombre')" class="valid-message">✓</span>
+    </div>
+
+    <!-- Campo Email -->
+    <div class="form-group">
+      <label for="correo">Email *</label>
+      <input 
+        id="correo"
+        type="email" 
+        placeholder="tu@email.com"
+        formControlName="correo"
+        [class.input-valid]="isFieldValid('correo')"
+        [class.input-invalid]="isFieldInvalid('correo')"
+      >
+      <div *ngIf="isFieldInvalid('correo')" class="error-message">
+        {{ getFieldError('correo') }}
+      </div>
+      <span *ngIf="isFieldValid('correo')" class="valid-message">✓</span>
+    </div>
+
+    <!-- Campo Mensaje -->
+    <div class="form-group">
+      <label for="mensaje">Mensaje *</label>
+      <textarea 
+        id="mensaje"
+        placeholder="Cuéntanos tu consulta o comentario..."
+        formControlName="mensaje"
+        rows="4"
+        [class.input-valid]="isFieldValid('mensaje') && formulario.get('mensaje')?.value"
+        [class.input-invalid]="isFieldInvalid('mensaje')"
+      ></textarea>
+      <div *ngIf="isFieldInvalid('mensaje')" class="error-message">
+        {{ getFieldError('mensaje') }}
+      </div>
+      <div class="char-count">
+        {{ formulario.get('mensaje')?.value?.length || 0 }} caracteres
+      </div>
+    </div>
+
+    <!-- Botón Enviar -->
+    <button 
+      type="submit"
+      class="btn-submit"
+      [disabled]="!formulario.valid || enviando"
+    >
+      <span *ngIf="!enviando">Enviar Mensaje</span>
+      <span *ngIf="enviando">Enviando...</span>
+    </button>
   </form>
 </div>

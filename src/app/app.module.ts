@@ -9,7 +9,7 @@ import { ServicesComponent } from './components/services/services.component';
 import { BenefitsComponent } from './components/benefits/benefits.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MascotasComponent } from './pages/mascotas/mascotas.component';
 import { HomeComponent } from './pages/home/home.component';
 
@@ -29,7 +29,7 @@ import { HomeComponent } from './pages/home/home.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [],
